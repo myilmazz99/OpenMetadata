@@ -275,8 +275,9 @@ const GlossaryTermTab = ({
             disabled={!isLoadMoreEnabled}
             loading={termsLoading || isTableLoading}
             type="primary"
-            onClick={handleLoadMoreTerms}
-          />
+            onClick={handleLoadMoreTerms}>
+            {t('label.load-more-terms')}
+          </Button>
           <Button
             className="tw-text-primary tw-rounded m-b-sm"
             size="small"

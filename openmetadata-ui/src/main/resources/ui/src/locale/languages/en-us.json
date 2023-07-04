@@ -470,6 +470,7 @@
     "list-entity": "List {{entity}}",
     "live": "Live",
     "load-more": "Load More",
+    "load-more-terms": "Load More Terms",
     "loading": "Loading",
     "local-config-source": "Local Config Source",
     "log-plural": "Logs",
