@@ -129,7 +129,7 @@ const mockProps = {
 
 describe('Test Glossary-term component', () => {
   it('Should render Glossary-term component', async () => {
-    render(<GlossaryTerms {...mockProps} childGlossaryTerms={[]} />);
+    render(<GlossaryTerms {...mockProps} childGlossaryTerms={null} />);
 
     const glossaryTerm = screen.getByTestId('glossary-term');
     const tabs = await screen.findAllByRole('tab');

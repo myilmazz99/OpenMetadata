@@ -17,6 +17,7 @@ import GlossaryHeader from 'components/Glossary/GlossaryHeader/GlossaryHeader.co
 import GlossaryTermTab from 'components/Glossary/GlossaryTermTab/GlossaryTermTab.component';
 import GlossaryDetailsRightPanel from 'components/GlossaryDetailsRightPanel/GlossaryDetailsRightPanel.component';
 import { GlossaryTerm } from 'generated/entity/data/glossaryTerm';
+import { PagingResponse } from 'Models';
 import React, { useState } from 'react';
 import { Glossary } from '../../generated/entity/data/glossary';
 import { OperationPermission } from '../PermissionProvider/PermissionProvider.interface';
@@ -25,7 +26,7 @@ import './GlossaryDetails.style.less';
 type props = {
   permissions: OperationPermission;
   glossary: Glossary;
-  glossaryTerms: GlossaryTerm[];
+  glossaryTerms: PagingResponse<GlossaryTerm[]> | null;
   termsLoading: boolean;
   updateGlossary: (value: Glossary) => Promise<void>;
   handleGlossaryDelete: (id: string) => void;
@@ -33,7 +34,6 @@ type props = {
   onAddGlossaryTerm: (glossaryTerm: GlossaryTerm | undefined) => void;
   onEditGlossaryTerm: (glossaryTerm: GlossaryTerm) => void;
   handleLoadMoreTerms?: () => void;
-  isLoadMoreEnabled?: boolean;
 };
 
 const GlossaryDetails = ({
@@ -47,7 +47,6 @@ const GlossaryDetails = ({
   onAddGlossaryTerm,
   onEditGlossaryTerm,
   handleLoadMoreTerms,
-  isLoadMoreEnabled,
 }: props) => {
   const [isDescriptionEditable, setIsDescriptionEditable] =
     useState<boolean>(false);
@@ -101,7 +100,6 @@ const GlossaryDetails = ({
                 isGlossary
                 childGlossaryTerms={glossaryTerms}
                 handleLoadMoreTerms={handleLoadMoreTerms}
-                isLoadMoreEnabled={isLoadMoreEnabled}
                 permissions={permissions}
                 refreshGlossaryTerms={refreshGlossaryTerms}
                 selectedData={glossary}

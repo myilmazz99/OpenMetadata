@@ -57,7 +57,7 @@ import {
 } from './GlossaryTermTab.interface';
 
 const GlossaryTermTab = ({
-  childGlossaryTerms = [],
+  childGlossaryTerms,
   refreshGlossaryTerms,
   permissions,
   isGlossary,
@@ -66,7 +66,6 @@ const GlossaryTermTab = ({
   onAddGlossaryTerm,
   onEditGlossaryTerm,
   handleLoadMoreTerms,
-  isLoadMoreEnabled,
 }: GlossaryTermTabProps) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
@@ -230,21 +229,22 @@ const GlossaryTermTab = ({
   };
 
   const toggleExpandAll = () => {
-    if (expandedRowKeys.length === childGlossaryTerms.length) {
+    if (expandedRowKeys.length === childGlossaryTerms?.data.length) {
       setExpandedRowKeys([]);
     } else {
       setExpandedRowKeys(
-        childGlossaryTerms.map((item) => item.fullyQualifiedName || '')
+        childGlossaryTerms?.data.map((item) => item.fullyQualifiedName || '') ||
+          []
       );
     }
   };
 
   useEffect(() => {
     if (childGlossaryTerms) {
-      const data = buildTree(childGlossaryTerms);
+      const data = buildTree(childGlossaryTerms.data);
       setGlossaryTerms(data as ModifiedGlossaryTerm[]);
       setExpandedRowKeys(
-        childGlossaryTerms.map((item) => item.fullyQualifiedName || '')
+        childGlossaryTerms.data.map((item) => item.fullyQualifiedName || '')
       );
     }
     setIsLoading(false);
@@ -270,20 +270,30 @@ const GlossaryTermTab = ({
   return (
     <Row gutter={[0, 16]}>
       <Col span={24}>
-        <div className="d-flex tw-justify-end">
+        <div className="d-flex tw-justify-between tw-items-center">
+          {childGlossaryTerms?.paging && (
+            <div className="tw-mb-2">
+              {t('message.showing-x-of-y', {
+                current: childGlossaryTerms.data.length,
+                total: childGlossaryTerms.paging.total,
+                entity: 'terms',
+              })}
+            </div>
+          )}
+
           <Button
             className="tw-text-primary tw-rounded m-b-sm"
             size="small"
             type="text"
             onClick={toggleExpandAll}>
             <Space align="center" size={4}>
-              {expandedRowKeys.length === childGlossaryTerms.length ? (
+              {expandedRowKeys.length === childGlossaryTerms?.data.length ? (
                 <DownUpArrowIcon color={DE_ACTIVE_COLOR} height="14px" />
               ) : (
                 <UpDownArrowIcon color={DE_ACTIVE_COLOR} height="14px" />
               )}
 
-              {expandedRowKeys.length === childGlossaryTerms.length
+              {expandedRowKeys.length === childGlossaryTerms?.data.length
                 ? t('label.collapse-all')
                 : t('label.expand-all')}
             </Space>
@@ -337,7 +347,7 @@ const GlossaryTermTab = ({
         </Modal>
         <div className="tw-mt-3 tw-mb-16 tw-flex tw-justify-center">
           <Button
-            disabled={!isLoadMoreEnabled}
+            disabled={!childGlossaryTerms?.paging?.after}
             loading={termsLoading || isTableLoading}
             type="primary"
             onClick={handleLoadMoreTerms}>

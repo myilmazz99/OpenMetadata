@@ -19,6 +19,7 @@ import GlossaryTermTab from 'components/Glossary/GlossaryTermTab/GlossaryTermTab
 import { getGlossaryTermDetailsPath } from 'constants/constants';
 import { myDataSearchIndex } from 'constants/Mydata.constants';
 import { t } from 'i18next';
+import { PagingResponse } from 'Models';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { searchData } from 'rest/miscAPI';
@@ -32,7 +33,7 @@ import GlossaryOverviewTab from './tabs/GlossaryOverviewTab.component';
 type Props = {
   permissions: OperationPermission;
   glossaryTerm: GlossaryTerm;
-  childGlossaryTerms: GlossaryTerm[];
+  childGlossaryTerms: PagingResponse<GlossaryTerm[]> | null;
   handleGlossaryTermUpdate: (data: GlossaryTerm) => Promise<void>;
   handleGlossaryTermDelete: (id: string) => void;
   refreshGlossaryTerms: () => void;
@@ -98,7 +99,7 @@ const GlossaryTermsV1 = ({
             {t('label.glossary-term-plural')}
             <span className="p-l-xs ">
               {getCountBadge(
-                childGlossaryTerms.length,
+                childGlossaryTerms?.data.length || 0,
                 '',
                 activeTab === 'terms'
               )}

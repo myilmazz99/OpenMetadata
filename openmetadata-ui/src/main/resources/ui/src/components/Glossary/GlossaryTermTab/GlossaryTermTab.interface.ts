@@ -14,10 +14,11 @@
 import { OperationPermission } from 'components/PermissionProvider/PermissionProvider.interface';
 import { Glossary } from 'generated/entity/data/glossary';
 import { GlossaryTerm } from 'generated/entity/data/glossaryTerm';
+import { PagingResponse } from 'Models';
 
 export interface GlossaryTermTabProps {
   selectedData: Glossary | GlossaryTerm;
-  childGlossaryTerms: GlossaryTerm[];
+  childGlossaryTerms: PagingResponse<GlossaryTerm[]> | null;
   isGlossary: boolean;
   termsLoading: boolean;
   refreshGlossaryTerms: () => void;
@@ -25,7 +26,6 @@ export interface GlossaryTermTabProps {
   onAddGlossaryTerm: (glossaryTerm: GlossaryTerm | undefined) => void;
   onEditGlossaryTerm: (glossaryTerm: GlossaryTerm) => void;
   handleLoadMoreTerms?: () => void;
-  isLoadMoreEnabled?: boolean;
 }
 
 export type ModifiedGlossaryTerm = Omit<GlossaryTerm, 'children'> & {

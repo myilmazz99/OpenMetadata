@@ -42,7 +42,7 @@ jest.mock('react-router-dom', () => ({
 
 const mockProps = {
   glossary: mockedGlossaries[0],
-  glossaryTerms: [],
+  glossaryTerms: null,
   termsLoading: false,
   permissions: {
     Create: true,

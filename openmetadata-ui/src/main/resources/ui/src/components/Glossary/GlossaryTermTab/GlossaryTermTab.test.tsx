@@ -40,7 +40,7 @@ describe('Test GlossaryTermTab component', () => {
     await act(async () => {
       render(
         <GlossaryTermTab
-          childGlossaryTerms={[]}
+          childGlossaryTerms={null}
           isGlossary={false}
           permissions={MOCK_PERMISSIONS}
           refreshGlossaryTerms={jest.fn()}
