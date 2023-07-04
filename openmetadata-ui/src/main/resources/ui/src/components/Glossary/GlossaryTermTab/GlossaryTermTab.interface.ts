@@ -24,6 +24,8 @@ export interface GlossaryTermTabProps {
   permissions: OperationPermission;
   onAddGlossaryTerm: (glossaryTerm: GlossaryTerm | undefined) => void;
   onEditGlossaryTerm: (glossaryTerm: GlossaryTerm) => void;
+  handleLoadMoreTerms?: () => void;
+  isLoadMoreEnabled?: boolean;
 }
 
 export type ModifiedGlossaryTerm = Omit<GlossaryTerm, 'children'> & {

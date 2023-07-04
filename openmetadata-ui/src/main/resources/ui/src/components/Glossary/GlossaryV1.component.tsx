@@ -14,13 +14,11 @@
 import { AxiosError } from 'axios';
 import { GlossaryTermForm } from 'components/AddGlossaryTermForm/AddGlossaryTermForm.interface';
 import Loader from 'components/Loader/Loader';
-import {
-  API_RES_MAX_SIZE,
-  getGlossaryTermDetailsPath,
-} from 'constants/constants';
+import { getGlossaryTermDetailsPath } from 'constants/constants';
 import { compare } from 'fast-json-patch';
 import { cloneDeep, isEmpty } from 'lodash';
 import { VERSION_VIEW_GLOSSARY_PERMISSION } from 'mocks/Glossary.mock';
+import { PagingResponse } from 'Models';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useParams } from 'react-router-dom';
@@ -35,7 +33,7 @@ import { GlossaryTerm } from '../../generated/entity/data/glossaryTerm';
 import { getEntityDeleteMessage } from '../../utils/CommonUtils';
 import { DEFAULT_ENTITY_PERMISSION } from '../../utils/PermissionsUtils';
 import { getGlossaryPath } from '../../utils/RouterUtils';
-import { showErrorToast } from '../../utils/ToastUtils';
+import { showErrorToast, showSuccessToast } from '../../utils/ToastUtils';
 import '../common/entityPageInfo/ManageButton/ManageButton.less';
 import GlossaryDetails from '../GlossaryDetails/GlossaryDetails.component';
 import GlossaryTermsV1 from '../GlossaryTerms/GlossaryTermsV1.component';
@@ -86,7 +84,9 @@ const GlossaryV1 = ({
   >();
   const [editMode, setEditMode] = useState(false);
 
-  const [glossaryTerms, setGlossaryTerms] = useState<GlossaryTerm[]>([]);
+  const [glossaryTerms, setGlossaryTerms] = useState<PagingResponse<
+    GlossaryTerm[]
+  > | null>(null);
   const { id } = selectedData ?? {};
 
   const handleCancelGlossaryExport = () => {
@@ -108,17 +108,33 @@ const GlossaryV1 = ({
   ) => {
     refresh ? setIsTermsLoading(true) : setIsLoading(true);
     try {
-      const { data } = await getGlossaryTerms({
+      const res = await getGlossaryTerms({
         ...params,
-        limit: API_RES_MAX_SIZE,
+        limit: 100,
         fields: 'tags,children,reviewers,relatedTerms,owner,parent',
       });
-      setGlossaryTerms(data);
+      setGlossaryTerms((prev) => ({
+        ...prev,
+        paging: res.paging,
+        data: [...(prev?.data || []), ...res.data],
+      }));
+
+      if (params?.after) {
+        showSuccessToast('Loaded 100 more glossary terms successfully.');
+      }
     } catch (error) {
       showErrorToast(error as AxiosError);
     } finally {
       refresh ? setIsTermsLoading(false) : setIsLoading(false);
     }
+  };
+
+  const handleLoadMoreTerms = () => {
+    if (!glossaryTerms?.paging?.after) {
+      return;
+    }
+
+    fetchGlossaryTerm({ after: glossaryTerms.paging.after });
   };
 
   const fetchGlossaryPermission = async () => {
@@ -283,8 +299,10 @@ const GlossaryV1 = ({
         (isGlossaryActive ? (
           <GlossaryDetails
             glossary={selectedData as Glossary}
-            glossaryTerms={glossaryTerms}
+            glossaryTerms={glossaryTerms?.data || []}
             handleGlossaryDelete={onGlossaryDelete}
+            handleLoadMoreTerms={handleLoadMoreTerms}
+            isLoadMoreEnabled={glossaryTerms?.paging?.after}
             permissions={glossaryPermission}
             refreshGlossaryTerms={() => loadGlossaryTerms(true)}
             termsLoading={isTermsLoading}
@@ -298,7 +316,7 @@ const GlossaryV1 = ({
           />
         ) : (
           <GlossaryTermsV1
-            childGlossaryTerms={glossaryTerms}
+            childGlossaryTerms={glossaryTerms?.data || []}
             glossaryTerm={selectedData as GlossaryTerm}
             handleGlossaryTermDelete={onGlossaryTermDelete}
             handleGlossaryTermUpdate={onGlossaryTermUpdate}

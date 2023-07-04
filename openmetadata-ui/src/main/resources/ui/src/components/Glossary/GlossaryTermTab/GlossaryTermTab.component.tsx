@@ -65,6 +65,8 @@ const GlossaryTermTab = ({
   termsLoading,
   onAddGlossaryTerm,
   onEditGlossaryTerm,
+  handleLoadMoreTerms,
+  isLoadMoreEnabled,
 }: GlossaryTermTabProps) => {
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(true);
@@ -268,7 +270,13 @@ const GlossaryTermTab = ({
   return (
     <Row gutter={[0, 16]}>
       <Col span={24}>
-        <div className="d-flex justify-end">
+        <div className="d-flex tw-justify-between tw-items-center tw-mb-2">
+          <Button
+            disabled={!isLoadMoreEnabled}
+            loading={termsLoading || isTableLoading}
+            type="primary"
+            onClick={handleLoadMoreTerms}
+          />
           <Button
             className="tw-text-primary tw-rounded m-b-sm"
             size="small"

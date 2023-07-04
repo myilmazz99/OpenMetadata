@@ -32,6 +32,8 @@ type props = {
   refreshGlossaryTerms: () => void;
   onAddGlossaryTerm: (glossaryTerm: GlossaryTerm | undefined) => void;
   onEditGlossaryTerm: (glossaryTerm: GlossaryTerm) => void;
+  handleLoadMoreTerms?: () => void;
+  isLoadMoreEnabled?: boolean;
 };
 
 const GlossaryDetails = ({
@@ -44,6 +46,8 @@ const GlossaryDetails = ({
   refreshGlossaryTerms,
   onAddGlossaryTerm,
   onEditGlossaryTerm,
+  handleLoadMoreTerms,
+  isLoadMoreEnabled,
 }: props) => {
   const [isDescriptionEditable, setIsDescriptionEditable] =
     useState<boolean>(false);
@@ -96,6 +100,8 @@ const GlossaryDetails = ({
               <GlossaryTermTab
                 isGlossary
                 childGlossaryTerms={glossaryTerms}
+                handleLoadMoreTerms={handleLoadMoreTerms}
+                isLoadMoreEnabled={isLoadMoreEnabled}
                 permissions={permissions}
                 refreshGlossaryTerms={refreshGlossaryTerms}
                 selectedData={glossary}
