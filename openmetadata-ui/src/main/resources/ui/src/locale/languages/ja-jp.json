@@ -470,6 +470,7 @@
     "list-entity": "{{entity}}のリスト",
     "live": "Live",
     "load-more": "Load More",
+    "load-more-terms": "Load More Terms",
     "loading": "読み込み中",
     "local-config-source": "Local Config Source",
     "log-plural": "ログ",

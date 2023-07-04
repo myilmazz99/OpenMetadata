@@ -67,7 +67,7 @@ const GlossaryV1 = ({
   const history = useHistory();
 
   const { getEntityPermission } = usePermissionProvider();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isTermsLoading, setIsTermsLoading] = useState(false);
 
   const [isDelete, setIsDelete] = useState<boolean>(false);
@@ -110,17 +110,21 @@ const GlossaryV1 = ({
     try {
       const res = await getGlossaryTerms({
         ...params,
-        limit: 100,
+        limit: 200,
         fields: 'tags,children,reviewers,relatedTerms,owner,parent',
       });
-      setGlossaryTerms((prev) => ({
-        ...prev,
-        paging: res.paging,
-        data: [...(prev?.data || []), ...res.data],
-      }));
+      setGlossaryTerms((prev) => {
+        const data = refresh ? res.data : [...(prev?.data || []), ...res.data];
 
-      if (params?.after) {
-        showSuccessToast('Loaded 100 more glossary terms successfully.');
+        return {
+          ...prev,
+          paging: res.paging,
+          data,
+        };
+      });
+
+      if (!refresh && params?.after) {
+        showSuccessToast('Loaded 200 more glossary terms successfully.');
       }
     } catch (error) {
       showErrorToast(error as AxiosError);
@@ -129,7 +133,7 @@ const GlossaryV1 = ({
     }
   };
 
-  const handleLoadMoreTerms = () => {
+  const handleLoadMoreTerms = async () => {
     if (!glossaryTerms?.paging?.after) {
       return;
     }
@@ -276,7 +280,7 @@ const GlossaryV1 = ({
 
   useEffect(() => {
     if (id && !action) {
-      loadGlossaryTerms();
+      loadGlossaryTerms(true);
       if (isGlossaryActive) {
         isVersionsView
           ? setGlossaryPermission(VERSION_VIEW_GLOSSARY_PERMISSION)

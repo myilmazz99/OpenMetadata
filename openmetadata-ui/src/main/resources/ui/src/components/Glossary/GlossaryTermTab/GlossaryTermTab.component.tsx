@@ -270,14 +270,7 @@ const GlossaryTermTab = ({
   return (
     <Row gutter={[0, 16]}>
       <Col span={24}>
-        <div className="d-flex tw-justify-between tw-items-center tw-mb-2">
-          <Button
-            disabled={!isLoadMoreEnabled}
-            loading={termsLoading || isTableLoading}
-            type="primary"
-            onClick={handleLoadMoreTerms}>
-            {t('label.load-more-terms')}
-          </Button>
+        <div className="d-flex tw-justify-end">
           <Button
             className="tw-text-primary tw-rounded m-b-sm"
             size="small"
@@ -342,6 +335,15 @@ const GlossaryTermTab = ({
             }}
           />
         </Modal>
+        <div className="tw-mt-3 tw-mb-16 tw-flex tw-justify-center">
+          <Button
+            disabled={!isLoadMoreEnabled}
+            loading={termsLoading || isTableLoading}
+            type="primary"
+            onClick={handleLoadMoreTerms}>
+            {t('label.load-more-terms')}
+          </Button>
+        </div>
       </Col>
     </Row>
   );
