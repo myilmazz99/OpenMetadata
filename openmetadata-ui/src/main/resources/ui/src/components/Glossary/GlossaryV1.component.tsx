@@ -15,6 +15,7 @@ import { AxiosError } from 'axios';
 import { GlossaryTermForm } from 'components/AddGlossaryTermForm/AddGlossaryTermForm.interface';
 import Loader from 'components/Loader/Loader';
 import { getGlossaryTermDetailsPath } from 'constants/constants';
+import { GLOSSARY_TERM_LIMIT } from 'constants/GlossaryTerms.constants';
 import { compare } from 'fast-json-patch';
 import { cloneDeep, isEmpty } from 'lodash';
 import { VERSION_VIEW_GLOSSARY_PERMISSION } from 'mocks/Glossary.mock';
@@ -110,9 +111,10 @@ const GlossaryV1 = ({
     try {
       const res = await getGlossaryTerms({
         ...params,
-        limit: 200,
+        limit: GLOSSARY_TERM_LIMIT,
         fields: 'tags,children,reviewers,relatedTerms,owner,parent',
       });
+
       setGlossaryTerms((prev) => {
         const data = refresh ? res.data : [...(prev?.data || []), ...res.data];
 
@@ -124,7 +126,9 @@ const GlossaryV1 = ({
       });
 
       if (!refresh && params?.after) {
-        showSuccessToast('Loaded 200 more glossary terms successfully.');
+        showSuccessToast(
+          `Loaded ${GLOSSARY_TERM_LIMIT} more glossary terms successfully.`
+        );
       }
     } catch (error) {
       showErrorToast(error as AxiosError);
@@ -212,8 +216,51 @@ const GlossaryV1 = ({
     }
   };
 
+  const reloadCurrentGlossaryTerms = async () => {
+    let res: PagingResponse<GlossaryTerm[]> | null = null;
+    let res2: PagingResponse<GlossaryTerm[]> | null = null;
+
+    try {
+      if (glossaryTerms?.paging.before) {
+        setIsLoading(true);
+
+        res = await getGlossaryTerms({
+          before: glossaryTerms?.paging.before,
+          limit: GLOSSARY_TERM_LIMIT,
+          fields: 'tags,children,reviewers,relatedTerms,owner,parent',
+        });
+
+        res2 = await getGlossaryTerms({
+          after: res.paging.after,
+          limit: GLOSSARY_TERM_LIMIT,
+          fields: 'tags,children,reviewers,relatedTerms,owner,parent',
+        });
+
+        setGlossaryTerms((prev) => {
+          const data = prev!.data.slice(
+            0,
+            prev!.data.length - GLOSSARY_TERM_LIMIT * 2
+          );
+          data.push(...(res?.data || []));
+          data.push(...(res2?.data || []));
+
+          return {
+            paging: res2?.paging,
+            data,
+          };
+        });
+      } else {
+        await fetchGlossaryTerm({}, true);
+      }
+    } catch (error) {
+      showErrorToast(error as AxiosError);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const onTermModalSuccess = useCallback(() => {
-    loadGlossaryTerms(true);
+    reloadCurrentGlossaryTerms();
     if (!isGlossaryActive && tab !== 'terms') {
       history.push(
         getGlossaryTermDetailsPath(
@@ -223,7 +270,7 @@ const GlossaryV1 = ({
       );
     }
     setIsEditModalOpen(false);
-  }, [isGlossaryActive, tab, selectedData]);
+  }, [isGlossaryActive, tab, selectedData, glossaryTerms]);
 
   const handleGlossaryTermAdd = async (formData: GlossaryTermForm) => {
     try {
@@ -298,8 +345,7 @@ const GlossaryV1 = ({
   ) : (
     <>
       {isLoading && <Loader />}
-      {!isLoading &&
-        !isEmpty(selectedData) &&
+      {!isEmpty(selectedData) &&
         (isGlossaryActive ? (
           <GlossaryDetails
             glossary={selectedData as Glossary}
@@ -308,7 +354,7 @@ const GlossaryV1 = ({
             handleLoadMoreTerms={handleLoadMoreTerms}
             permissions={glossaryPermission}
             refreshGlossaryTerms={() => loadGlossaryTerms(true)}
-            termsLoading={isTermsLoading}
+            termsLoading={isTermsLoading || isLoading}
             updateGlossary={updateGlossary}
             onAddGlossaryTerm={(term) =>
               handleGlossaryTermModalAction(false, term)

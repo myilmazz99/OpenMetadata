@@ -32,6 +32,7 @@ import RichTextEditorPreviewer from 'components/common/rich-text-editor/RichText
 import Loader from 'components/Loader/Loader';
 import { DE_ACTIVE_COLOR } from 'constants/constants';
 import { GLOSSARIES_DOCS } from 'constants/docs.constants';
+import { GLOSSARY_TERM_LIMIT } from 'constants/GlossaryTerms.constants';
 import { TABLE_CONSTANTS } from 'constants/Teams.constants';
 import { ERROR_PLACEHOLDER_TYPE } from 'enums/common.enum';
 import { compare } from 'fast-json-patch';
@@ -243,18 +244,23 @@ const GlossaryTermTab = ({
     if (childGlossaryTerms) {
       const data = buildTree(childGlossaryTerms.data);
       setGlossaryTerms(data as ModifiedGlossaryTerm[]);
-      setExpandedRowKeys(
-        childGlossaryTerms.data.map((item) => item.fullyQualifiedName || '')
-      );
+      setExpandedRowKeys((prev) => {
+        return [
+          ...prev,
+          ...childGlossaryTerms.data
+            .slice(childGlossaryTerms.data.length - GLOSSARY_TERM_LIMIT)
+            .map((item) => item.fullyQualifiedName || ''),
+        ];
+      });
     }
     setIsLoading(false);
   }, [childGlossaryTerms]);
 
-  if (termsLoading || isLoading) {
+  if (isLoading) {
     return <Loader />;
   }
 
-  if (isEmpty(glossaryTerms)) {
+  if (!termsLoading && isEmpty(glossaryTerms)) {
     return (
       <ErrorPlaceHolder
         className="m-t-xlg"
@@ -300,27 +306,24 @@ const GlossaryTermTab = ({
           </Button>
         </div>
 
-        {glossaryTerms.length > 0 ? (
-          <DndProvider backend={HTML5Backend}>
-            <Table
-              bordered
-              className="drop-over-background"
-              columns={columns}
-              components={TABLE_CONSTANTS}
-              dataSource={glossaryTerms}
-              expandable={expandableConfig}
-              loading={isTableLoading}
-              pagination={false}
-              rowKey="fullyQualifiedName"
-              scroll={{ x: true }}
-              size="small"
-              tableLayout="auto"
-              onRow={onTableRow}
-            />
-          </DndProvider>
-        ) : (
-          <ErrorPlaceHolder />
-        )}
+        <DndProvider backend={HTML5Backend}>
+          <Table
+            bordered
+            className="drop-over-background"
+            columns={columns}
+            components={TABLE_CONSTANTS}
+            dataSource={glossaryTerms}
+            expandable={expandableConfig}
+            loading={termsLoading}
+            pagination={false}
+            rowKey="fullyQualifiedName"
+            scroll={{ x: true }}
+            size="small"
+            tableLayout="auto"
+            onRow={onTableRow}
+          />
+        </DndProvider>
+
         <Modal
           centered
           destroyOnClose
