@@ -13,7 +13,6 @@
 
 import { AxiosError } from 'axios';
 import { GlossaryTermForm } from 'components/AddGlossaryTermForm/AddGlossaryTermForm.interface';
-import Loader from 'components/Loader/Loader';
 import { getGlossaryTermDetailsPath } from 'constants/constants';
 import { GLOSSARY_TERM_LIMIT } from 'constants/GlossaryTerms.constants';
 import { compare } from 'fast-json-patch';
@@ -344,7 +343,7 @@ const GlossaryV1 = ({
     <ImportGlossary glossaryName={selectedData.name} />
   ) : (
     <>
-      {isLoading && <Loader />}
+      {/* {isLoading && <Loader />} */}
       {!isEmpty(selectedData) &&
         (isGlossaryActive ? (
           <GlossaryDetails
