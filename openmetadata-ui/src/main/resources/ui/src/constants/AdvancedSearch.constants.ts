@@ -21,7 +21,6 @@ import {
   Utils as QbUtils,
 } from 'react-awesome-query-builder';
 import AntdConfig from 'react-awesome-query-builder/lib/config/antd';
-import { getAdvancedFieldDefaultOptions } from 'rest/miscAPI';
 import { suggestQuery } from 'rest/searchAPI';
 import { EntityFields, SuggestionField } from '../enums/AdvancedSearch.enum';
 import { SearchIndex } from '../enums/search.enum';
@@ -32,7 +31,7 @@ const BaseConfig = AntdConfig as BasicConfig;
 export const COMMON_DROPDOWN_ITEMS = [
   {
     label: t('label.owner'),
-    key: 'owner.displayName',
+    key: 'owner.fullyQualifiedName',
   },
   {
     label: t('label.tag'),
@@ -95,7 +94,7 @@ export const CONTAINER_DROPDOWN_ITEMS = [
 export const GLOSSARY_DROPDOWN_ITEMS = [
   {
     label: t('label.owner'),
-    key: 'owner.displayName',
+    key: 'owner.fullyQualifiedName',
   },
 ];
 
@@ -128,7 +127,7 @@ export const emptyJsonTree: JsonTree = {
           type: 'rule',
           properties: {
             // owner is common field , so setting owner as default field here
-            field: 'owner.displayName',
+            field: 'owner.fullyQualifiedName',
             operator: null,
             value: [],
             valueSrc: ['value'],
@@ -149,59 +148,37 @@ export const autocomplete: (args: {
   entitySearchIndex: SearchIndex | SearchIndex[];
   entityField: EntityFields;
   suggestField?: SuggestionField;
-}) => SelectFieldSettings['asyncFetch'] = ({
-  searchIndex,
-  suggestField,
-  entitySearchIndex,
-  entityField,
-}) => {
+}) => SelectFieldSettings['asyncFetch'] = ({ searchIndex, suggestField }) => {
   const isUserAndTeamSearchIndex =
     searchIndex.includes(SearchIndex.USER) ||
-    searchIndex.includes(SearchIndex.TEAM);
+    searchIndex.includes(SearchIndex.TEAM) ||
+    searchIndex.includes(SearchIndex.TAG);
 
   return (search) => {
-    if (search) {
-      return suggestQuery({
-        query: search ?? '*',
-        searchIndex: searchIndex,
-        field: suggestField,
-        // fetch source if index is type of user or team and both
-        fetchSource: isUserAndTeamSearchIndex,
-      }).then((resp) => {
-        return {
-          values: uniq(resp).map(({ text, _source }) => {
-            // set displayName or name if index is type of user or team and both.
-            // else set the text
-            const name =
-              isUserAndTeamSearchIndex && !isUndefined(_source)
-                ? _source?.displayName || _source.name
-                : text;
+    return suggestQuery({
+      query: search ?? '*',
+      searchIndex: searchIndex,
+      field: suggestField,
+      // fetch source if index is type of user or team or tag
+      fetchSource: isUserAndTeamSearchIndex,
+    }).then((resp) => {
+      return {
+        values: uniq(resp).map(({ text, _source }) => {
+          // set displayName or name if index is type of user or team and both.
+          // else set the text
+          const name =
+            isUserAndTeamSearchIndex && !isUndefined(_source)
+              ? _source?.displayName || _source.name
+              : text;
 
-            return {
-              value: name,
-              title: name,
-            };
-          }),
-          hasMore: false,
-        };
-      });
-    } else {
-      return getAdvancedFieldDefaultOptions(
-        entitySearchIndex,
-        entityField
-      ).then((response) => {
-        const buckets =
-          response.data.aggregations[`sterms#${entityField}`].buckets;
-
-        return {
-          values: buckets.map((bucket) => ({
-            value: bucket.key,
-            title: bucket.label ?? bucket.key,
-          })),
-          hasMore: false,
-        };
-      });
-    }
+          return {
+            value: (_source as any)?.fullyQualifiedName || name,
+            title: name,
+          };
+        }),
+        hasMore: false,
+      };
+    });
   };
 };
 
@@ -223,7 +200,7 @@ const getCommonQueryBuilderFields = (
       defaultValue: true,
     },
 
-    'owner.displayName': {
+    'owner.fullyQualifiedName': {
       label: t('label.owner'),
       type: 'select',
       mainWidgetProps,
@@ -489,6 +466,6 @@ export const getQbConfigs: (searchIndex: SearchIndex) => BasicConfig = (
   }
 };
 
-export const MISC_FIELDS = ['owner.displayName', 'tags.tagFQN'];
+export const MISC_FIELDS = ['owner.fullyQualifiedName', 'tags.tagFQN'];
 
 export const OWNER_QUICK_FILTER_DEFAULT_OPTIONS_KEY = 'displayName.keyword';
