@@ -772,7 +772,7 @@ body .profiler-graph .recharts-active-dot circle {
   align-content: flex-start;
   position: relative;
   height: calc(100% - 70px);
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .full-height {
