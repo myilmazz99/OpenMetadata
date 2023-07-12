@@ -141,7 +141,10 @@ const GlossaryV1 = ({
       return;
     }
 
-    fetchGlossaryTerm({ after: glossaryTerms.paging.after });
+    fetchGlossaryTerm({
+      after: glossaryTerms.paging.after,
+      [isGlossaryActive ? 'glossary' : 'parent']: id,
+    });
   };
 
   const fetchGlossaryPermission = async () => {
@@ -227,12 +230,14 @@ const GlossaryV1 = ({
           before: glossaryTerms?.paging.before,
           limit: GLOSSARY_TERM_LIMIT,
           fields: 'tags,children,reviewers,relatedTerms,owner,parent',
+          [isGlossaryActive ? 'glossary' : 'parent']: id,
         });
 
         res2 = await getGlossaryTerms({
           after: res.paging.after,
           limit: GLOSSARY_TERM_LIMIT,
           fields: 'tags,children,reviewers,relatedTerms,owner,parent',
+          [isGlossaryActive ? 'glossary' : 'parent']: id,
         });
 
         setGlossaryTerms((prev) => {
@@ -249,7 +254,10 @@ const GlossaryV1 = ({
           };
         });
       } else {
-        await fetchGlossaryTerm({}, true);
+        await fetchGlossaryTerm(
+          isGlossaryActive ? { glossary: id } : { parent: id },
+          true
+        );
       }
     } catch (error) {
       showErrorToast(error as AxiosError);
