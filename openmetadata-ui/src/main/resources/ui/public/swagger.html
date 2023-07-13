@@ -14,7 +14,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="./favicon.png" />
+    <link rel="icon" href="./favicon.jpeg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
 
@@ -76,8 +76,8 @@
             : redocOptions || [];
           const [redoc_openApi, redoc_options, redoc_dom, redoc_callBack] =
             redocOptionsRes;
-          const redocVersion = (// Read the redoc version number from the label
-          ($(`script[src*="/redoc@"]`).attr(`src`) || ``).match(
+          const redocVersion = // Read the redoc version number from the label
+          (($(`script[src*="/redoc@"]`).attr(`src`) || ``).match(
             /redoc@(.+?)\//
           ) || [])[1];
           const cfg = {
