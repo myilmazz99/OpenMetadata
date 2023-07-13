@@ -212,62 +212,86 @@ const GlossaryV1 = ({
           entity: t('label.glossary-term'),
         });
       }
+      setGlossaryTerms((prev) => {
+        if (!prev) {
+          return prev;
+        }
+
+        const resultIndex = prev?.data.findIndex((i) => i.id === response.id);
+
+        if (resultIndex >= 0) {
+          if (currentData.name !== updatedData.name) {
+            prev.data
+              .filter((i) => i.parent?.id === updatedData.id)
+              .forEach(
+                (i) =>
+                  (i.parent!.fullyQualifiedName = response.fullyQualifiedName)
+              );
+          }
+          const newData = prev.data;
+          newData[resultIndex] = { ...newData[resultIndex], ...response };
+
+          return { ...prev, data: newData };
+        } else {
+          return prev;
+        }
+      });
       onTermModalSuccess();
     } catch (error) {
       showErrorToast(error as AxiosError);
     }
   };
 
-  const reloadCurrentGlossaryTerms = async () => {
-    let res: PagingResponse<GlossaryTerm[]> | null = null;
-    let res2: PagingResponse<GlossaryTerm[]> | null = null;
+  // const reloadCurrentGlossaryTerms = async () => {
+  //   let res: PagingResponse<GlossaryTerm[]> | null = null;
+  //   let res2: PagingResponse<GlossaryTerm[]> | null = null;
 
-    try {
-      if (glossaryTerms?.paging.before) {
-        setIsLoading(true);
+  //   try {
+  //     if (glossaryTerms?.paging.before) {
+  //       setIsLoading(true);
 
-        res = await getGlossaryTerms({
-          before: glossaryTerms?.paging.before,
-          limit: GLOSSARY_TERM_LIMIT,
-          fields: 'tags,children,reviewers,relatedTerms,owner,parent',
-          [isGlossaryActive ? 'glossary' : 'parent']: id,
-        });
+  //       res = await getGlossaryTerms({
+  //         before: glossaryTerms?.paging.before,
+  //         limit: GLOSSARY_TERM_LIMIT,
+  //         fields: 'tags,children,reviewers,relatedTerms,owner,parent',
+  //         [isGlossaryActive ? 'glossary' : 'parent']: id,
+  //       });
 
-        res2 = await getGlossaryTerms({
-          after: res.paging.after,
-          limit: GLOSSARY_TERM_LIMIT,
-          fields: 'tags,children,reviewers,relatedTerms,owner,parent',
-          [isGlossaryActive ? 'glossary' : 'parent']: id,
-        });
+  //       res2 = await getGlossaryTerms({
+  //         after: res.paging.after,
+  //         limit: GLOSSARY_TERM_LIMIT,
+  //         fields: 'tags,children,reviewers,relatedTerms,owner,parent',
+  //         [isGlossaryActive ? 'glossary' : 'parent']: id,
+  //       });
 
-        setGlossaryTerms((prev) => {
-          const data = prev!.data.slice(
-            0,
-            prev!.data.length - GLOSSARY_TERM_LIMIT * 2
-          );
-          data.push(...(res?.data || []));
-          data.push(...(res2?.data || []));
+  //       setGlossaryTerms((prev) => {
+  //         const data = prev!.data.slice(
+  //           0,
+  //           prev!.data.length - GLOSSARY_TERM_LIMIT * 2
+  //         );
+  //         data.push(...(res?.data || []));
+  //         data.push(...(res2?.data || []));
 
-          return {
-            paging: res2?.paging,
-            data,
-          };
-        });
-      } else {
-        await fetchGlossaryTerm(
-          isGlossaryActive ? { glossary: id } : { parent: id },
-          true
-        );
-      }
-    } catch (error) {
-      showErrorToast(error as AxiosError);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //         return {
+  //           paging: res2?.paging,
+  //           data,
+  //         };
+  //       });
+  //     } else {
+  //       await fetchGlossaryTerm(
+  //         isGlossaryActive ? { glossary: id } : { parent: id },
+  //         true
+  //       );
+  //     }
+  //   } catch (error) {
+  //     showErrorToast(error as AxiosError);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const onTermModalSuccess = useCallback(() => {
-    reloadCurrentGlossaryTerms();
+    // reloadCurrentGlossaryTerms();
     if (!isGlossaryActive && tab !== 'terms') {
       history.push(
         getGlossaryTermDetailsPath(
@@ -281,13 +305,25 @@ const GlossaryV1 = ({
 
   const handleGlossaryTermAdd = async (formData: GlossaryTermForm) => {
     try {
-      await addGlossaryTerm({
+      const response = await addGlossaryTerm({
         ...formData,
         reviewers: formData.reviewers.map(
           (item) => item.fullyQualifiedName || ''
         ),
         glossary: activeGlossaryTerm?.glossary?.name || selectedData.name,
         parent: activeGlossaryTerm?.fullyQualifiedName,
+      });
+
+      setGlossaryTerms((prev) => {
+        if (!prev) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          paging: { ...prev.paging, total: prev.paging.total + 1 },
+          data: [...prev.data, response as any],
+        };
       });
       onTermModalSuccess();
     } catch (err) {

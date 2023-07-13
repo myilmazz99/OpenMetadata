@@ -131,12 +131,14 @@ export const getGlossaryTermByFQN = async (
   return response.data;
 };
 
-export const addGlossaryTerm = (
+export const addGlossaryTerm = async (
   data: CreateGlossaryTerm
-): Promise<AxiosResponse> => {
+): Promise<CreateGlossaryTerm> => {
   const url = '/glossaryTerms';
 
-  return APIClient.post(url, data);
+  const response = await APIClient.post(url, data);
+
+  return response.data;
 };
 
 export const patchGlossaryTerm = async (id: string, patch: Operation[]) => {
