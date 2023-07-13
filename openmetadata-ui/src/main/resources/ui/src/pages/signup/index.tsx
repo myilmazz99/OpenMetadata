@@ -146,6 +146,7 @@ const SignUp = () => {
                   {t('label.full-name')}
                 </label>
                 <input
+                  readOnly
                   required
                   autoComplete="off"
                   className="tw-appearance-none tw-border tw-border-main  
