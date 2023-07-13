@@ -351,7 +351,6 @@ const GlossaryV1 = ({
     <ImportGlossary glossaryName={selectedData.name} />
   ) : (
     <>
-      {/* {isLoading && <Loader />} */}
       {!isEmpty(selectedData) &&
         (isGlossaryActive ? (
           <GlossaryDetails
@@ -376,10 +375,11 @@ const GlossaryV1 = ({
             glossaryTerm={selectedData as GlossaryTerm}
             handleGlossaryTermDelete={onGlossaryTermDelete}
             handleGlossaryTermUpdate={onGlossaryTermUpdate}
+            handleLoadMoreTerms={handleLoadMoreTerms}
             isSummaryPanelOpen={isSummaryPanelOpen}
             permissions={glossaryTermPermission}
             refreshGlossaryTerms={() => loadGlossaryTerms(true)}
-            termsLoading={isTermsLoading}
+            termsLoading={isTermsLoading || isLoading}
             onAddGlossaryTerm={(term) =>
               handleGlossaryTermModalAction(false, term)
             }

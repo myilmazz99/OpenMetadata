@@ -42,6 +42,7 @@ type Props = {
   termsLoading: boolean;
   onAddGlossaryTerm: (glossaryTerm: GlossaryTerm | undefined) => void;
   onEditGlossaryTerm: (glossaryTerm: GlossaryTerm) => void;
+  handleLoadMoreTerms?: () => void;
 };
 
 const GlossaryTermsV1 = ({
@@ -56,6 +57,7 @@ const GlossaryTermsV1 = ({
   termsLoading,
   onAddGlossaryTerm,
   onEditGlossaryTerm,
+  handleLoadMoreTerms,
 }: Props) => {
   const {
     glossaryName: glossaryFqn,
@@ -110,6 +112,7 @@ const GlossaryTermsV1 = ({
         children: (
           <GlossaryTermTab
             childGlossaryTerms={childGlossaryTerms}
+            handleLoadMoreTerms={handleLoadMoreTerms}
             isGlossary={false}
             permissions={permissions}
             refreshGlossaryTerms={refreshGlossaryTerms}
@@ -145,6 +148,7 @@ const GlossaryTermsV1 = ({
     return items;
   }, [
     glossaryTerm,
+    childGlossaryTerms,
     permissions,
     termsLoading,
     activeTab,
