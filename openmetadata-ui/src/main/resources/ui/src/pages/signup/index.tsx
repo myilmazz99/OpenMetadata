@@ -24,7 +24,6 @@ import { useHistory } from 'react-router-dom';
 import { createUser } from 'rest/userAPI';
 import { getNameFromUserData } from 'utils/AuthProvider.util';
 import appState from '../../AppState';
-import { ReactComponent as OMDLogo } from '../../assets/svg/logo-monogram.svg';
 import { ELLIPSES, REDIRECT_PATHNAME, ROUTES } from '../../constants/constants';
 import { CreateUser } from '../../generated/api/teams/createUser';
 import { User } from '../../generated/entity/teams/user';
@@ -114,11 +113,10 @@ const SignUp = () => {
       <div className="tw-h-screen tw-flex tw-justify-center">
         <div className="tw-flex tw-flex-col tw-items-center signup-box">
           <div className="tw-flex tw-justify-center tw-items-center tw-my-7">
-            <OMDLogo
-              data-testid="om-logo"
-              height={50}
-              name={t('label.open-metadata-logo')}
-              width={50}
+            <img
+              alt="HDM Logo"
+              className="tw-block tw-w-14 tw-h-14 tw-mx-auto"
+              src="/favicon.jpeg"
             />
           </div>
           <div className="tw-mb-7">
@@ -149,9 +147,8 @@ const SignUp = () => {
                   readOnly
                   required
                   autoComplete="off"
-                  className="tw-appearance-none tw-border tw-border-main  
-              tw-rounded tw-w-full tw-py-2 tw-px-3 tw-text-grey-body  tw-leading-tight 
-              focus:tw-outline-none focus:tw-border-focus hover:tw-border-hover tw-h-10"
+                  className="tw-cursor-not-allowed tw-appearance-none tw-border tw-border-main tw-rounded tw-bg-gray-100
+                  tw-w-full tw-py-2 tw-px-3 tw-text-grey-body tw-leading-tight focus:tw-outline-none focus:tw-border-focus hover:tw-border-hover tw-h-10"
                   data-testid="full-name-input"
                   id="displayName"
                   name="displayName"
