@@ -125,7 +125,7 @@ const SignUp = () => {
                 i18nKey="label.join-entity"
                 renderElement={<span className="tw-text-primary" />}
                 values={{
-                  entity: t('label.open-metadata'),
+                  entity: t('label.data-analysis-platform'),
                 }}
               />
             </h4>
