@@ -10,8 +10,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import MonoGram from 'assets/svg/logo-monogram.svg';
-import Logo from 'assets/svg/logo.svg';
+import Logo from 'assets/img/logo.png';
+import MonoGram from 'assets/img/monogramLogo.jpeg';
 import { useApplicationConfigProvider } from 'components/ApplicationConfigProvider/ApplicationConfigProvider';
 import React, { FC } from 'react';
 
