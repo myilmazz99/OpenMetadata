@@ -368,7 +368,7 @@ const getInitialConfigWithoutFields = () => {
         showCheckboxes: true,
         useAsyncSearch: true,
         useLoadMore: false,
-        valuePlaceholder: 'Start typing to search...',
+        valuePlaceholder: t('label.start-typing-to-search'),
       },
       select: {
         ...BaseConfig.widgets.select,
@@ -376,7 +376,7 @@ const getInitialConfigWithoutFields = () => {
         showCheckboxes: true,
         useAsyncSearch: true,
         useLoadMore: false,
-        valuePlaceholder: 'Start typing to search...',
+        valuePlaceholder: t('label.start-typing-to-search'),
       },
       text: {
         ...BaseConfig.widgets.text,
