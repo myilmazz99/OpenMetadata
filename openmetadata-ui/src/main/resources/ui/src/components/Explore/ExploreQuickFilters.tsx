@@ -23,10 +23,7 @@ import {
   getTagSuggestions,
   getUserSuggestions,
 } from 'rest/miscAPI';
-import {
-  MISC_FIELDS,
-  OWNER_QUICK_FILTER_DEFAULT_OPTIONS_KEY,
-} from '../../constants/AdvancedSearch.constants';
+import { MISC_FIELDS } from '../../constants/AdvancedSearch.constants';
 import {
   getAdvancedField,
   getOptionTextFromKey,
@@ -67,10 +64,12 @@ const ExploreQuickFilters: FC<ExploreQuickFiltersProps> = ({
     setOptions([]);
     try {
       if (key === MISC_FIELDS[0]) {
-        await fetchDefaultOptions(
-          [SearchIndex.USER, SearchIndex.TEAM],
-          OWNER_QUICK_FILTER_DEFAULT_OPTIONS_KEY
-        );
+        // ? disabled since there is no way to fetch fullyQualifiedName
+        // ? to use in filters using this API
+        // await fetchDefaultOptions(
+        //   [SearchIndex.USER, SearchIndex.TEAM],
+        //   OWNER_QUICK_FILTER_DEFAULT_OPTIONS_KEY
+        // );
       } else {
         await fetchDefaultOptions(index, key);
       }
@@ -130,10 +129,19 @@ const ExploreQuickFilters: FC<ExploreQuickFiltersProps> = ({
             const suggestOptions =
               res.data.suggest['metadata-suggest'][0].options ?? [];
 
-            const formattedSuggestions = suggestOptions.map((op) => ({
-              key: op._source.displayName ?? op._source.name,
-              label: op._source.displayName ?? op._source.name,
-            }));
+            const formattedSuggestions = suggestOptions.map((op) => {
+              let suggestionKey = op._source.displayName ?? op._source.name;
+
+              if (key === 'owner.fullyQualifiedName') {
+                suggestionKey =
+                  op._source.fullyQualifiedName ?? op._source.name;
+              }
+
+              return {
+                key: suggestionKey,
+                label: op._source.displayName ?? op._source.name,
+              };
+            });
 
             setOptions(uniqWith(formattedSuggestions, isEqual));
           }
