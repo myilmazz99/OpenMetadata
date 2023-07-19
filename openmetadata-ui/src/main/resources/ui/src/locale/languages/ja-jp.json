@@ -807,6 +807,7 @@
     "start-date-time-zone": "開始日: ({{timeZone}})",
     "start-elasticsearch-docker": "Elasticsearch Docker をスタート",
     "start-entity": "{{entity}}をスタート",
+    "start-typing-to-search": "Start typing to search...",
     "started": "Started",
     "started-following": "フォローを開始",
     "status": "ステータス",

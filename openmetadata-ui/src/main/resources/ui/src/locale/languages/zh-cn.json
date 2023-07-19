@@ -807,6 +807,7 @@
     "start-date-time-zone": "开始日期：({{timeZone}})",
     "start-elasticsearch-docker": "启动 Elasticsearch 容器",
     "start-entity": "开始{{entity}}",
+    "start-typing-to-search": "Start typing to search...",
     "started": "已开始",
     "started-following": "开始关注",
     "status": "状态",

@@ -807,6 +807,7 @@
     "start-date-time-zone": "Fecha de Inicio: ({{timeZone}})",
     "start-elasticsearch-docker": "Iniciar Elasticsearch Docker",
     "start-entity": "Iniciar {{entity}}",
+    "start-typing-to-search": "Start typing to search...",
     "started": "Started",
     "started-following": "Comenzó a seguir",
     "status": "Estado",
