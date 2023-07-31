@@ -23,7 +23,7 @@ const DocumentTitle: FC<DocumentTitleProps> = ({ title }) => {
 
   return (
     <Helmet>
-      <title>{`${title} | ${t('label.open-metadata')}`}</title>
+      <title>{`${title} | ${t('label.datahub')}`}</title>
     </Helmet>
   );
 };

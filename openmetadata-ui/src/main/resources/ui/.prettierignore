@@ -36,6 +36,7 @@ src/test/unit/coverage
 .lintstagedrc.json
 .licenseheaderrc.json
 swagger.html
+datahub_platform_guide.pdf
 
 # macOS
 .DS_Store
