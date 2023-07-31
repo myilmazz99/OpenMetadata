@@ -215,6 +215,10 @@ module.exports = {
           to: outputPath,
         },
         {
+          from: path.join(__dirname, 'public/platform-guide.pdf'),
+          to: outputPath,
+        },
+        {
           from: path.join(__dirname, 'public/robots.txt'),
           to: outputPath,
         },

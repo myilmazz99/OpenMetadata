@@ -19,6 +19,7 @@ import {
   urlGitbookDocs,
   urlGithubRepo,
   urlJoinSlack,
+  urlPlatformGuide,
 } from 'constants/URL.constants';
 import { isEmpty, isString, max } from 'lodash';
 import { observer } from 'mobx-react';
@@ -105,12 +106,33 @@ const Appbar: React.FC = (): JSX.Element => {
             alt="tour-con"
             className="align-middle m-r-xss"
             icon={Icons.TOUR}
-            width="12"
+            width="16"
           />
           <span className="text-base-color">{t('label.tour')}</span>
         </Space>
       ),
       key: 'tour',
+    },
+    {
+      label: (
+        <a
+          className="link-title"
+          href={urlPlatformGuide}
+          rel="noreferrer"
+          target="_blank">
+          <Space size={4}>
+            <SVGIcons
+              alt="tour-con"
+              className="align-middle m-r-xss"
+              icon={Icons.ICON_GUIDE}
+              width="16"
+            />
+            <span className="text-base-color">{t('label.platform-guide')}</span>
+            <IconExternalLink className="m-l-xss" height={14} width={14} />
+          </Space>
+        </a>
+      ),
+      key: 'platformGuide',
     },
     {
       label: (

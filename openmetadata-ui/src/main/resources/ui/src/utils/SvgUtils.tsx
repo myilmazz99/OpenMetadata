@@ -82,6 +82,7 @@ import IconFitView from '../assets/svg/fitview.svg';
 import IconForeignKey from '../assets/svg/foriegnKey.svg';
 import IconFullScreen from '../assets/svg/full-screen.svg';
 import IconGithubStar from '../assets/svg/github-star.svg';
+import IconGuide from '../assets/svg/guide.svg';
 import IconHidePassword from '../assets/svg/hide-password.svg';
 import IconAlertBell from '../assets/svg/ic-alert-bell.svg';
 import IconAllApplicationPrimary from '../assets/svg/ic-all-application-primary.svg';
@@ -288,6 +289,7 @@ export const Icons = {
   DOC_PRIMARY: 'doc-primary',
   API: 'api',
   WHATS_NEW: 'whats-new',
+  ICON_GUIDE: 'guide',
   TABLE: 'table',
   TOPIC: 'topic',
   DASHBOARD: 'dashboard',
@@ -712,6 +714,10 @@ const SVGIcons: FunctionComponent<Props> = ({ icon, ...props }: Props) => {
       break;
     case Icons.WHATS_NEW:
       IconComponent = IconWhatsNew;
+
+      break;
+    case Icons.ICON_GUIDE:
+      IconComponent = IconGuide;
 
       break;
     case Icons.TABLE:
