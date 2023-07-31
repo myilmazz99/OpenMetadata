@@ -23,4 +23,4 @@
   # Run ESLint
   - eslint 'src/**/*.{js,jsx,ts,tsx,json}' --fix
 # Run Prettier
-# 'src/**': prettier --write
+'src/**': prettier --write
