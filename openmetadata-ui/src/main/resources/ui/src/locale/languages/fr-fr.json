@@ -622,6 +622,7 @@
     "pipeline-name": "Nom du Pipeline",
     "pipeline-plural": "Pipelines",
     "pipeline-state": "Statut du Pipeline",
+    "platform-guide": "Platform Guide",
     "please-enter-value": "Merci d'entrer une valeur pour {{name}} ",
     "please-password-type-first": "Merci d'entrer le mot de passe d'abord",
     "please-select": "Merci de sélectionner",
