@@ -27,7 +27,6 @@
 *.png
 *.ico
 *.ttf
-*.pdf
 
 # Ignore files
 ".dockerignore"
