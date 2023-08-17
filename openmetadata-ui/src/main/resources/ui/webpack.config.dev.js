@@ -215,7 +215,7 @@ module.exports = {
           to: outputPath,
         },
         {
-          from: path.join(__dirname, 'public/datahub_platform_guide.pdf'),
+          from: path.join(__dirname, 'public/datahub-platform-guide.pdf'),
           to: outputPath,
         },
         {

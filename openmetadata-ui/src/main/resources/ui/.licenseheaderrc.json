@@ -1,4 +1,5 @@
 {
+  "ignore": ["*.pdf", "**/*.pdf"],
   "ignoreFile": ".licenseheaderignore",
   "license": "LICENSE",
   "trailingWhitespace": "TRIM",
